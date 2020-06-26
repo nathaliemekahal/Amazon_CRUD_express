@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import{Container,Row,Col,Card,Button} from 'react-bootstrap'
 
 class Home extends Component {
   constructor(props) {
@@ -17,10 +18,22 @@ class Home extends Component {
   render() {
     
     return (
-        <>
-          {this.state.products.map(product=>
-            <img src={product.imageUrl}/>)}
-        </>
+        <Container>
+       <Row className="row-cols-sm-2 row-cols-md-4">
+        {this.state.products.map(product=>
+         <Card>
+         <Card.Img className='image-fluid' variant="top" src={product.imageUrl} />
+         <Card.Body>
+           <Card.Title>{product.name}</Card.Title>
+           <Card.Text>
+             {product.description}
+           </Card.Text>
+           <Button variant="primary">Go somewhere</Button>
+         </Card.Body>
+       </Card>
+        )}
+       </Row>
+        </Container>
     )
   }
 }
