@@ -1,9 +1,10 @@
 const express=require('express')
 const cors=require('cors')
-const reviewsRoutes = require('./services/reviews')
+
 
 //Routes
 const productsRoute=require("./services/products")
+const reviewsRoutes = require('./services/reviews')
 const server=express()
 server.use(cors())
 server.use(express.json())
