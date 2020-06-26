@@ -3,8 +3,9 @@ const path=require("path")
 const fs=require("fs")
 const uniqid=require("uniqid")
 const {join} = require("path")
+const multer = require("multer")
 const {readFile,writeFile,createReadStream}=require("fs-extra")
-
+const upload = multer({})
 
 
 
@@ -49,16 +50,25 @@ router.put("/:id",(req,res)=>{
   filteredArray.push(replacement)
   res.send(filteredArray)
 })
+//Images Path
+const studentsFolderPath = join(__dirname, "../../../public/img/Products")
+//POST images
+router.post("/:id/uploadImage",upload.single("productImage"),async(req,res,next)=>{
+  try{
+    await writeFile(join(studentsFolderPath,req.params.id+'.'+req.file.originalname.split('.').pop()), req.file.buffer)
+    const productsArray= JSON.parse(fs.readFileSync(productsFilePath).toString())
+    productsArray.forEach(product =>{
+      if(product._id === req.params.id){
+        product['imageUrl'] =` http://localhost:3000/img/Products/${req.params.id}.${req.file.mimetype.slice(-3)}`
+      }
+      fs.writeFileSync(productsFilePath, JSON.stringify(productsArray))
+      res.send('uploaded successfully')
+    })
+  }
+  catch(error){
 
-// router.post("/:id/uploadImage",upload.single("productiamge"),async(req,res,next)=>{
-//   try{
-//     join(productsFilePath,req.params.id+'.'+req.file.originalname.split('.').pop())
-  
-//   }
-//   catch(error){
-
-//   }
-// })
+  }
+})
 
 
 module.exports=router
