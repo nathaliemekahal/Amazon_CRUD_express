@@ -7,7 +7,9 @@ a:hover{
 }
 .card-img-top img{
   min-height:'400px' !important;
-  width:"300px" !important;
+  /* width:"300px" !important; */
   
 }
-
+.img-fluid{
+  height: 180px !important;
+}

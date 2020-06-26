@@ -19,18 +19,21 @@ class Home extends Component {
     
     return (
         <Container>
-       <Row className="row-cols-sm-2 row-cols-md-4">
+          <p className='text-center display-4'>Products</p>
+       <Row >
         {this.state.products.map(product=>
-         <Card>
-         <Card.Img className='image-fluid' variant="top" src={product.imageUrl} />
+        <Col xs={3}>
+         <Card  className='my-2 mx-1'>
+         <Card.Img className='img-fluid' variant="top" src={product.imageUrl} />
          <Card.Body>
            <Card.Title>{product.name}</Card.Title>
            <Card.Text>
              {product.description}
            </Card.Text>
-           <Button variant="primary">Go somewhere</Button>
+           <Button variant="primary">More Details</Button>
          </Card.Body>
        </Card>
+       </Col>
         )}
        </Row>
         </Container>
