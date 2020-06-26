@@ -4,6 +4,7 @@ import './App.css';
 import {BrowserRouter as Router,Route} from 'react-router-dom'
 import Home from './Components/Home'
 import NavBar from './Components/NavBar'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
