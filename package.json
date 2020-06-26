@@ -9,14 +9,15 @@
     "express-list-endpoints": "^4.0.1",
     "express-validator": "^6.6.0",
     "fs-extra": "^9.0.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "uniqid": "^5.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"nodemon ./src/server.js"
+    "dev": "nodemon ./src/server.js"
   },
   "repository": {
     "type": "git",
