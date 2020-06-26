@@ -5,6 +5,7 @@ import {BrowserRouter as Router,Route} from 'react-router-dom'
 import Home from './Components/Home'
 import NavBar from './Components/NavBar'
 import uploadProduct from './Components/uploadProduct'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (

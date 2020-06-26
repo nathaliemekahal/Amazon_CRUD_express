@@ -51,7 +51,7 @@ router.put("/:id",(req,res)=>{
   res.send(filteredArray)
 })
 //Images Path
-const studentsFolderPath = join(__dirname, "../../../public/img/Products")
+const studentsFolderPath = join(__dirname, "../../../amazon/public/img/Products")
 //POST images
 router.post("/:id/uploadImage",upload.single("productImage"),async(req,res,next)=>{
   try{
@@ -59,7 +59,7 @@ router.post("/:id/uploadImage",upload.single("productImage"),async(req,res,next)
     const productsArray= JSON.parse(fs.readFileSync(productsFilePath).toString())
     productsArray.forEach(product =>{
       if(product._id === req.params.id){
-        product['imageUrl'] =` http://localhost:3000/img/Products/${req.params.id}.${req.file.mimetype.slice(-3)}`
+        product['imageUrl'] =` http://localhost:3000/img/Products/${req.params.id}.${req.file.originalname.split('.').pop()}`
       }
       fs.writeFileSync(productsFilePath, JSON.stringify(productsArray))
       res.send('uploaded successfully')
