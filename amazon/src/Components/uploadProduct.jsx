@@ -18,9 +18,28 @@ const schema = Yup.object({
 
 
 class uploadProduct extends React.Component {
-  state = {
-    hide : true,
-    data :{}
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+      hide : true,
+      data :{},
+      editProduct:''
+    }
+  }
+  
+
+  componentDidMount=async()=>{
+   if(this.props.match.params.id){
+     console.log('ID',this.props.match.params.id)
+    let response=await fetch('http://localhost:3006/products/'+this.props.match.params.id)
+    let editProduct=await response.json()
+    console.log('editProduct',editProduct)
+    this.setState({editProduct})
+   }
+   else{
+     console.log('EMPTY ID')
+   }
   }
   componentDidUpdate = async(prevState)=>{
     if(this.state.data !== prevState.data){
@@ -36,8 +55,10 @@ class uploadProduct extends React.Component {
       console.log(parsedJson)
   }
 }
+
   render(){
   return(
+  
   <Container className='form mb-3'>
     <p className='display-4 text-center'>Upload a product</p>
     <Formik
