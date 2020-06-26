@@ -1,0 +1,31 @@
+{
+  "name": "amazon_crud_express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-list-endpoints": "^4.0.1",
+    "express-validator": "^6.6.0",
+    "fs-extra": "^9.0.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"nodemon ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathaliemekahal/Amazon_CRUD_express.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nathaliemekahal/Amazon_CRUD_express/issues"
+  },
+  "homepage": "https://github.com/nathaliemekahal/Amazon_CRUD_express#readme"
+}
