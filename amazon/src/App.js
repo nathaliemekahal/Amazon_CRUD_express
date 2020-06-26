@@ -14,9 +14,9 @@ function App() {
     <Router>
       <NavBar/>
       <Route path="/" exact component={Home}/>
-      <Route path ="/uploadProduct" component={uploadProduct}/>
+      {/* <Route path ="/uploadProduct" component={uploadProduct}/> */}
       <Route path ={"/products/searchResults"} component ={searchProducts}/>
-      <Route path ="/uploadProduct/" component={uploadProduct}/>
+      {/* <Route path ="/uploadProduct/" component={uploadProduct}/> */}
       <Route path ="/uploadProduct/:id" component={uploadProduct}/>
       <Route path="/Details/:id" exact component={Details}/>
     </Router>

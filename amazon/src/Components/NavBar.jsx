@@ -25,7 +25,7 @@ class NavBar extends Component {
             <Navbar bg="light" variant="light">
                 <Navbar.Brand href="/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/100px-Amazon_logo.svg.png" alt=""/></Navbar.Brand>
                 <Nav className="mr-auto">
-                <Nav.Link href="#home"><Link to='/uploadProduct'>Backend</Link></Nav.Link>
+                <Nav.Link href="#home"><Link to='/uploadProduct/:id'>Backend</Link></Nav.Link>
                 </Nav>
                 <Form inline>
                 <FormControl type="text" placeholder="Search" onChange={this.updateQuery} className="mr-sm-2" />

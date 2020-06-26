@@ -24,18 +24,36 @@ class uploadProduct extends React.Component {
     this.state = {
       hide : true,
       data :{},
-      editProduct:''
+      editProduct:'',
+      intValues : {
+        name:'',
+        description:'',
+        brand :'',
+        imageUrl:'',
+        category :'',
+        price:''
+      }
     }
   }
   
 
   componentDidMount=async()=>{
-   if(this.props.match.params.id){
-     console.log('ID',this.props.match.params.id)
+   if(this.props.match.params.id.length > 3){
+     console.log('ID',this.props.match.params.id.length)
     let response=await fetch('http://localhost:3006/products/'+this.props.match.params.id)
-    let editProduct=await response.json()
+    let parsedJson = await response.json()
+    let editProduct= parsedJson[0]
     console.log('editProduct',editProduct)
     this.setState({editProduct})
+   const intValues = {
+        name:editProduct.name,
+        description:editProduct.description,
+        brand :editProduct.name,
+        imageUrl:editProduct.imageUrl,
+        category :editProduct.category,
+        price:editProduct.price
+    }
+    this.setState({intValues})
    }
    else{
      console.log('EMPTY ID')
@@ -72,14 +90,8 @@ class uploadProduct extends React.Component {
         this.setState({data : values})
     }
     }
-    initialValues = {{
-      name:'',
-      description:'',
-      brand :'',
-      imageUrl:'',
-      category :'',
-      price:''
-    }}
+    enableReinitialize
+    initialValues = {this.state.intValues}
     >
     {({
       handleSubmit,
