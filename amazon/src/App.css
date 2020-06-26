@@ -13,3 +13,7 @@ a:hover{
 .img-fluid{
   height: 180px !important;
 }
+.searchText {
+  font-size: 25px;
+  margin-top: 5px;
+}

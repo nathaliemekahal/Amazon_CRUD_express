@@ -6,6 +6,7 @@ import Home from './Components/Home'
 import NavBar from './Components/NavBar'
 import uploadProduct from './Components/uploadProduct'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import searchProducts from './Components/searchProducts'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <NavBar/>
       <Route path="/" exact component={Home}/>
       <Route path ="/uploadProduct" component={uploadProduct}/>
+      <Route path ={"/products/searchResults"} component ={searchProducts}/>
     </Router>
   );
 }
