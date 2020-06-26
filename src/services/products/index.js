@@ -40,7 +40,7 @@ router.delete("/:id",(req,res)=>{
     product._id!==req.params.id
   )
   fs.writeFileSync(productsFilePath,JSON.stringify(filteredArray))
-  res.status(200).send(filteredArray)
+  res.status(200).send("ok")
 })
 router.put("/:id",(req,res)=>{
   let productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())

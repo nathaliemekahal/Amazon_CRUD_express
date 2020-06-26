@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import{Container,Row,Col,Card,Button} from 'react-bootstrap'
+import {Link} from 'react-router-dom'
 
 class Home extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class Home extends Component {
            <Card.Text>
              {product.description}
            </Card.Text>
-           <Button variant="primary">More Details</Button>
+           <Link to ={`/details/${product._id}`}><Button variant="primary">More Details</Button></Link>
          </Card.Body>
        </Card>
        </Col>
