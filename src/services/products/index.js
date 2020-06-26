@@ -27,11 +27,11 @@ router.get("/:id",(req,res)=>{
 })
 
 router.post("/",(req,res)=>{
-  const newProduct={_id:uniqid(),...req.body,createdAt:new Date()+new Date().getHours()}
+  const newProduct={...req.body,_id:uniqid(),createdAt:new Date()+new Date().getHours()}
   productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
   productsArray.push(newProduct)
   fs.writeFileSync(productsFilePath,JSON.stringify(productsArray))
-  res.status(201).send(newProduct)
+  res.status(201).send(req.body)
 })
 
 router.delete("/:id",(req,res)=>{
