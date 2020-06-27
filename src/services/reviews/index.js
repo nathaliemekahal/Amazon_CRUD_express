@@ -5,6 +5,8 @@ const uniqid = require('uniqid')
 
 const router = express.Router()
 const reviewsPath = path.join(__dirname,"reviews.json")
+const productsFilePath = path.join(__dirname,"../products/products.json")
+
 function readReviews (file){
     const bufferFileContent = fse.readFileSync(file)
     const reviewsArray = JSON.parse(bufferFileContent.toString())
@@ -28,12 +30,38 @@ router.get('/:id',(req,res)=>{
 })
 
 router.post('/:id',(req,res)=>{
+    const content ={...req.body}
+    const rating = content.rate
     const newReview = {...req.body,id:uniqid(),elementId:req.params.id,createdAt:new Date()}
     const bufferFileContent = fse.readFileSync(reviewsPath)
     const reviewsArray = JSON.parse(bufferFileContent.toString())
     reviewsArray.push(newReview)
     fse.writeFileSync(reviewsPath, JSON.stringify(reviewsArray))
-    res.send(reviewsArray)
+    //  res.send(content['rate'])
+    // console.log(content.rate)
+
+    const productBufferFileContent = fse.readFileSync(productsFilePath)
+    const productFileContent = JSON.parse(productBufferFileContent.toString())
+    productFileContent.forEach(product =>{
+        if(product._id === req.params.id){
+            if(product.NumberOfReviews){
+                product.NumberOfReviews +=1
+            }else{
+                product.NumberOfReviews = 1
+            }
+        }
+        if(product._id === req.params.id){
+            if(product.totalRating){
+                product.totalRating += rating
+            }else{
+                product.totalRating = rating
+            }
+        }
+    })
+
+     fse.writeFileSync(productsFilePath ,JSON.stringify(productFileContent))
+
+    res.send(productFileContent)
 })
 
 router.put('/:id/:reviewId',(req,res)=>{

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import {Container,Row,Col,Button} from 'react-bootstrap'
-
-
+import {Container,Row,Col,Button,Dropdown} from 'react-bootstrap'
+import {MdEdit} from 'react-icons/md'
+import {AiFillStar ,AiOutlineStar} from 'react-icons/ai'
+import {IconContext} from 'react-icons'
+import Review from './Review'
 class Details extends Component {
     constructor(props) {
         super(props)
@@ -35,18 +37,58 @@ class Details extends Component {
     
     render() {
         return (
-            <Container>
+            <Container className='details'>
               <Row className="row-cols-2 justify-content-center">
-                <Col>
-                <img style={{width:'100%'}}src={this.state.product.imageUrl}/>
+                <Col xs={4}>
+                <img className='img-fluid' style={{width:'100%'}}src={this.state.product.imageUrl}/>
                 </Col>
-                <Col>
-                  <h1>{this.state.product.name}</h1>
-                  <h2>{this.state.product.description}</h2>
-                  <h4>Price:{this.state.product.price}$</h4>
-                  <Button variant="danger" onClick={()=>this.removeProduct(this.state.product._id)}>Delete </Button>
-                  <Button className="ml-2" variant="warning" onClick={this.editProduct}>Edit </Button>
+                <Col className='info' xs={7}>
+                  <p>{this.state.product.name}</p>
 
+                  <div className="stars-outer">
+                <div className="stars">
+                  <IconContext.Provider value={{className:'starIcons'}}>
+                      <p><AiOutlineStar/></p>
+                      <p><AiOutlineStar/></p>
+                      <p><AiOutlineStar/></p>
+                      <p><AiOutlineStar/></p>
+                      <p><AiOutlineStar/></p>
+                  </IconContext.Provider>
+                </div>
+                <div className="starsFilled" style={{width :`${(this.state.product.totalRating/this.state.product.NumberOfReviews)*20}%`}}>
+                  <IconContext.Provider value={{className:'starIconsFilled'}}>
+                      <p><AiFillStar/></p>
+                      <p><AiFillStar/></p>
+                      <p><AiFillStar/></p>
+                      <p><AiFillStar/></p>
+                      <p><AiFillStar/></p>
+                  </IconContext.Provider>
+                </div>
+                
+              </div>
+                  <p>Price:<span style={{color:'red'}}>  ${this.state.product.price}</span></p>
+                  <p>Description : {this.state.product.description}</p>
+                  {/* <Button variant="danger" onClick={()=>this.removeProduct(this.state.product._id)}>Delete </Button> */}
+                  {/* <Button className="ml-2" variant="warning" onClick={this.editProduct}>Edit </Button> */}
+
+                <Review/>
+                </Col>
+                <Col xs={1}>
+                <Dropdown>
+                    <Dropdown.Toggle className='d-flex'>
+                    <IconContext.Provider value={{className:'editIcon'}}>
+                      <MdEdit />
+                    </IconContext.Provider>
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item  onClick={this.editProduct}
+                  >Edit Product</Dropdown.Item>
+
+                    <Dropdown.Item onClick={()=>this.removeProduct(this.state.product._id)}>
+                      Delete Product</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
                 </Col>
               </Row>
             </Container>
