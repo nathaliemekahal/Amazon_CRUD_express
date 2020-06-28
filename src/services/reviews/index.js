@@ -22,11 +22,13 @@ router.get('/:id',(req,res)=>{
     // readReviews(reviewsPath)
     const bufferFileContent = fse.readFileSync(reviewsPath)
     const reviewsArray = JSON.parse(bufferFileContent.toString())
+    const reviews = []
     reviewsArray.forEach(review =>{
         if(review.elementId === req.params.id){
-          res.send(review)
+            reviews.push(review)
         }
     })
+    res.send(reviews)
 })
 
 router.post('/:id',(req,res)=>{
@@ -61,7 +63,8 @@ router.post('/:id',(req,res)=>{
 
      fse.writeFileSync(productsFilePath ,JSON.stringify(productFileContent))
 
-    res.send(productFileContent)
+    // res.send(productFileContent)
+    res.send('ok')
 })
 
 router.put('/:id/:reviewId',(req,res)=>{
@@ -89,7 +92,23 @@ router.delete('/:id/:reviewId',(req,res)=>{
     const reviewsArray = JSON.parse(bufferFileContent.toString())
     const filteredArray = reviewsArray.filter(review => review.id !== req.params.reviewId)
     fse.writeFileSync(reviewsPath, JSON.stringify(filteredArray))
-    res.send(filteredArray)
+    
+    const productBufferFileContent = fse.readFileSync(productsFilePath)
+    const productFileContent = JSON.parse(productBufferFileContent.toString())
+    productFileContent.forEach(product =>{
+        if(product._id === req.params.id){
+            if(product.NumberOfReviews){
+                product.NumberOfReviews -=1
+            }
+        }
+        // if(product._id === req.params.id){
+        //     if(product.totalRating){
+        //         product.totalRating -= rating
+        //     }
+        // }
+    })
+    fse.writeFileSync(productsFilePath ,JSON.stringify(productFileContent))
+    res.send('ok')
 })
 
 module.exports = router

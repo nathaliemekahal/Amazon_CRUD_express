@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
+body{
+  /* background-color: black !important; */
+  background: linear-gradient(180deg, rgba(255,255,255,1) 5%, rgba(79,214,197,1) 71%);
+  /* color: white !important;  */
+}
 a {
   
   color: black !important;
@@ -73,6 +78,8 @@ a:hover{
   box-shadow: 3px 2px 5px 0px rgba(0,0,0,0.75);
   height: 400px;
   font-family: "Lato",sans-serif;
+  color: black;
+  background-color: white !important;
 }
 .details .col-1{
   padding: 0;
@@ -173,4 +180,39 @@ a:hover{
 .details .reviewsCount {
   font-size: 12px !important;
   padding-top: 7px;
+}
+.reviews{
+  padding-top: 20px;
+  padding-left: 0px;
+}
+.reviews span{
+  padding-left: 10px;
+}
+.reviews .reviewIcon{
+  color: #f8ce0b;
+  margin-bottom: 8px;
+}
+.reviews p{
+  font-size: 18px !important;
+  font-weight: 600;
+}
+.reviews ul{
+ list-style: none;
+ padding: 0;
+}
+.reviews ul li {
+  display: flex;
+  font-size: 14px !important;
+}
+.reviews ul .noreview{
+  font-size: 14px !important;
+  font-weight: normal !important;
+}
+.reviews .sendIcon{
+  margin-top: 15px;
+  font-size: 24px !important;
+}
+.reviews .editIcon{
+  margin-top: -5px !important;
+  font-size: 10px !important;
 }

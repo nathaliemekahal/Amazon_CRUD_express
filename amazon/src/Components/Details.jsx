@@ -37,6 +37,7 @@ class Details extends Component {
     
     render() {
         return (
+          <Container fluid style={{height:'85vh'}}>
             <Container className='details'>
               <Row className="row-cols-2 justify-content-center">
                 <Col xs={4}>
@@ -71,7 +72,7 @@ class Details extends Component {
                   {/* <Button variant="danger" onClick={()=>this.removeProduct(this.state.product._id)}>Delete </Button> */}
                   {/* <Button className="ml-2" variant="warning" onClick={this.editProduct}>Edit </Button> */}
 
-                <Review/>
+                <Review id={this.props.match.params.id}/>
                 </Col>
                 <Col xs={1}>
                 <Dropdown>
@@ -91,6 +92,7 @@ class Details extends Component {
                 </Dropdown>
                 </Col>
               </Row>
+            </Container>
             </Container>
         )
     }
