@@ -12,8 +12,10 @@ class Review extends Component {
              reviews :[],
              review :{
                  comment:'',
-                 rate:''
-             }
+                 rate:'',
+                 id:''
+             },
+             editMode:false
         }
     }
     componentDidMount = async()=>{
@@ -33,19 +35,41 @@ class Review extends Component {
         this.setState({review})
     }
     sendReview =async()=>{
-        let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`,{
-            method:'POST',
-            body:JSON.stringify(this.state.review),
-            headers : new Headers({
-                'Content-type': "application/json"
+        if(this.state.editMode===false){
+            let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`,{
+                method:'POST',
+                body:JSON.stringify(this.state.review),
+                headers : new Headers({
+                    'Content-type': "application/json"
+                })
             })
-        })
-        if(response.ok){
-            let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
-            let reviews = await response.json()
-            this.setState({reviews})
-            console.log('REVIEWS',this.state.reviews)
+            if(response.ok){
+                let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
+                let reviews = await response.json()
+                this.setState({reviews})
+                console.log('REVIEWS',this.state.reviews)
+            }
         }
+        else if(this.state.editMode===true){
+            let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}/${this.state.review.id}`,{
+                method:'PUT',
+                body:JSON.stringify(this.state.review),
+                headers : new Headers({
+                    'Content-type': "application/json"
+                }
+                )
+            
+            })
+          
+            if(response.ok){
+                let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
+                let reviews = await response.json()
+                this.setState({reviews})
+                console.log('REVIEWS',this.state.reviews)
+                this.setState({editMode:false})
+            }
+        }
+      
     }
     removeReview=async(reviewId)=>{
         let response=await fetch("http://localhost:3006/reviews/"+this.props.id+'/'+reviewId,{
@@ -59,9 +83,22 @@ class Review extends Component {
             console.log('REVIEWS',this.state.reviews)
       }       
     }
+    editReview=async(review)=>{
+        let reviewObj ={
+            comment:review.comment,
+            rate:review.rate,
+            id:review.id
+        }
+        this.setState({review:reviewObj})
+        this.setState({editMode:true})
+        
+    }
     render() {
         return (
-            <Container className='reviews'>
+            <>
+           
+                
+                <Container className='reviews'>
                 <div>
                     <p>Reviews</p>
                     <ul>
@@ -82,7 +119,7 @@ class Review extends Component {
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu>
-                                    <Dropdown.Item  onClick={this.editProduct}
+                                    <Dropdown.Item  onClick={()=>this.editReview(review)}
                             >Edit Review</Dropdown.Item>
 
                                 <Dropdown.Item onClick={()=>this.removeReview(review.id)}>
@@ -95,6 +132,7 @@ class Review extends Component {
                     }
                     </ul>
                     <div>
+                    {this.state.editMode===false&&
                         <Form>
                             <Form.Row>
                                 <Form.Group as={Col} controlId="formGridCity">
@@ -103,7 +141,7 @@ class Review extends Component {
                                 </Form.Group>
                                 <Form.Group as={Col} sm={2} >
                                     <Form.Label>Rating</Form.Label>
-                                    <Form.Control onChange ={this.updateReview} id='rate' as="select" defaultValue="Choose...">
+                                    <Form.Control onChange ={this.updateReview} id='rate' as="select" defaultValue="1">
                                         <option>1</option>
                                         <option>2</option>
                                         <option>3</option>
@@ -119,9 +157,41 @@ class Review extends Component {
                                 </Form.Group>
                             </Form.Row>
                         </Form>
+                      }
+                       {this.state.editMode===true&&
+                        <Form>
+                            <Form.Row>
+                                <Form.Group as={Col} controlId="formGridCity">
+                                    <Form.Label>Current Review</Form.Label>
+                                    <Form.Control onChange ={this.updateReview} id='comment' value={this.state.review.comment} />
+                                </Form.Group>
+                                <Form.Group as={Col} sm={2} >
+                                    <Form.Label>Rating</Form.Label>
+                                    <Form.Control onChange ={this.updateReview} id='rate' as="select" defaultValue={this.state.review.rate}>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </Form.Control>
+                                </Form.Group>
+                                <Form.Group as={Col} sm={1}>
+                                    <Form.Label></Form.Label>
+                                <IconContext.Provider value={{className :'sendIcon'}}>
+                                    <p onClick={this.sendReview}><MdSend/></p>
+                                </IconContext.Provider>
+                                </Form.Group>
+                            </Form.Row>
+                         
+                        </Form>
+                      }
                     </div>
                 </div>
             </Container>
+
+          
+             
+        </>
         )
     }
 }

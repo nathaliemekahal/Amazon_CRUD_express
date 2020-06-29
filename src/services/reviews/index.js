@@ -76,7 +76,8 @@ router.put('/:id/:reviewId',(req,res)=>{
             createdDate = review.createdAt
         }
     })
-    const filteredArray = reviewsArray.filter(element => element.elementId !== req.params.id)
+    const filteredArray = reviewsArray.filter(element => element.id !== req.params.reviewId)
+    // console.log('filteredARRAY',filteredArray)
     const review = req.body
     review.elementId = req.params.id
     review.id = req.params.reviewId
@@ -85,6 +86,7 @@ router.put('/:id/:reviewId',(req,res)=>{
     filteredArray.push(review)
     fse.writeFileSync(reviewsPath , JSON.stringify(filteredArray) )
     res.send(filteredArray)
+    
 })
 
 router.delete('/:id/:reviewId',(req,res)=>{

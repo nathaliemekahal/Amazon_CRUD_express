@@ -53,7 +53,7 @@ router.put("/:id",(req,res)=>{
   filteredArray.splice(index, 0, replacement);
   // filteredArray.push(replacement)
   fs.writeFileSync(productsFilePath,JSON.stringify(filteredArray))
-  res.send('ok')
+  res.send(ok)
 })
 //Images Path
 const studentsFolderPath = join(__dirname, "../../../amazon/public/img/Products")
