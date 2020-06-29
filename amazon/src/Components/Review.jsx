@@ -41,7 +41,10 @@ class Review extends Component {
             })
         })
         if(response.ok){
-            alert('Sucessfully')
+            let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
+            let reviews = await response.json()
+            this.setState({reviews})
+            console.log('REVIEWS',this.state.reviews)
         }
     }
     removeReview=async(reviewId)=>{
@@ -50,7 +53,10 @@ class Review extends Component {
         })
       if(response.ok){
         alert('Successfully Deleted')
-        // this.props.history.push('/')
+        let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
+            let reviews = await response.json()
+            this.setState({reviews})
+            console.log('REVIEWS',this.state.reviews)
       }       
     }
     render() {

@@ -43,7 +43,6 @@ class uploadProduct extends React.Component {
     let response=await fetch('http://localhost:3006/products/'+this.props.match.params.id)
     let parsedJson = await response.json()
     let editProduct= parsedJson[0]
-    console.log('editProduct',editProduct)
     this.setState({editProduct})
    const intValues = {
         name:editProduct.name,
@@ -59,20 +58,64 @@ class uploadProduct extends React.Component {
      console.log('EMPTY ID')
    }
   }
-  componentDidUpdate = async(prevState)=>{
-    if(this.state.data !== prevState.data){
-    console.log(this.state.data)
-      let response = await fetch('http://127.0.0.1:3006/products/',{
-          method:'POST',
-          body:JSON.stringify(this.state.data),
-          headers : new Headers({
-              'Content-type': "application/json"
-          })
-      })
-      let parsedJson = await response.json()
-      console.log(parsedJson)
-  }
-}
+//   componentDidUpdate = async(prevState)=>{
+//     if(this.state.data !== prevState.data&&this.state.data!=={ }){
+
+//       let response = await fetch('http://127.0.0.1:3006/products/',{
+//           method:'POST',
+//           body:JSON.stringify(this.state.data),
+//           headers : new Headers({
+//               'Content-type': "application/json"
+//           })
+//       })
+//       let parsedJson = await response.json()
+  
+//   }
+//   // if(this.props.match.params.id.length>3&&this.state.data!=={ }){
+//   //   console.log("DATA",this.state.data)
+//   //  console.log('EDITTING')
+
+// }
+// }
+        sendInfo=async()=>{
+
+          if(this.props.match.params.id.length >3){
+            let response = await fetch('http://127.0.0.1:3006/products/'+this.props.match.params.id,{
+              method:'PUT',
+              body:JSON.stringify(this.state.data),
+              headers : new Headers({
+                  'Content-type': "application/json"
+              })
+             
+          }
+     
+          )
+            if(response.ok){
+              alert('SUCCESSFULLY EDITTED')
+              this.props.history.push('/')
+
+}            }else{
+            let response = await fetch('http://127.0.0.1:3006/products/',{
+              method:'POST',
+              body:JSON.stringify(this.state.data),
+              headers : new Headers({
+                  'Content-type': "application/json"
+              })
+             
+          }
+            )
+            console.log('RESPONSE',response)
+         
+            if(response.ok){
+              alert('SUCCESSFULLY POSTED')
+              this.props.history.push('/')
+          }
+        
+          }
+       
+      
+      }
+
 
   render(){
   return(
@@ -87,7 +130,7 @@ class uploadProduct extends React.Component {
     //   console.log(values);
     // }}
     onSubmit = {values =>{
-        this.setState({data : values})
+      this.setState({ data: values}, this.sendInfo);
     }
     }
     enableReinitialize
@@ -205,7 +248,7 @@ class uploadProduct extends React.Component {
         </Form.Row>
 
         <Button className='submitBtn' type="submit"
-        disabled={(Object.keys(errors).length === 0) ? null : this.state.hide}
+       
         >Submit product</Button>
         {/* {console.log(errors)} */}
       </Form>

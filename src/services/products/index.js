@@ -31,7 +31,7 @@ router.post("/",(req,res)=>{
   productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
   productsArray.push(newProduct)
   fs.writeFileSync(productsFilePath,JSON.stringify(productsArray))
-  res.status(201).send(req.body)
+  res.status(201).send('ok')
 })
 
 router.delete("/:id",(req,res)=>{
@@ -44,11 +44,16 @@ router.delete("/:id",(req,res)=>{
 })
 router.put("/:id",(req,res)=>{
   let productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
+  index = productsArray.findIndex(product => product._id ===req.params.id);
+ 
+
   let filteredArray=productsArray.filter(product=>
     product._id!==req.params.id)
   let replacement={_id:req.params.id,...req.body,updatedAt:new Date()+new Date().getHours()}  
-  filteredArray.push(replacement)
-  res.send(filteredArray)
+  filteredArray.splice(index, 0, replacement);
+  // filteredArray.push(replacement)
+  fs.writeFileSync(productsFilePath,JSON.stringify(filteredArray))
+  res.send('ok')
 })
 //Images Path
 const studentsFolderPath = join(__dirname, "../../../amazon/public/img/Products")
