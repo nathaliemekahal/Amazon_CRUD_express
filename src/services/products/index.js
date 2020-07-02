@@ -9,6 +9,9 @@ const upload = multer({});
 const {xml2js} = require("xml-js");
 const { begin } = require("xmlbuilder");
 const axios = require("axios");
+const PDFDocument = require('pdfkit');
+
+
 
 const router = express.Router();
 
@@ -145,5 +148,43 @@ router.post(
     } catch (error) {}
   }
 );
+router.get("/:id/exportToPDF",(req,res)=>{
 
+ 
+  const productsArray = JSON.parse(
+    fs.readFileSync(productsFilePath).toString()
+  );
+  let filteredArray = productsArray.filter(
+    (product) => product._id === req.params.id
+  );
+  res.send(filteredArray);
+  
+
+  const doc = new PDFDocument();
+  doc.pipe(fs.createWriteStream('new.pdf'));
+
+  doc
+  .font("public/fonts/PalatinoBold.ttf")
+  .fontSize(20)
+  .text('NAME: '+JSON.stringify(filteredArray[0].name).replace(/"/g,''), 100, 100);
+
+  doc
+  .font("public/fonts/PalatinoBold.ttf")
+  .fontSize(18)
+  .text('DESCRIPTION: '+JSON.stringify(filteredArray[0].description).replace(/"/g,''), 100, 130);
+
+
+  doc
+  .font("public/fonts/PalatinoBold.ttf")
+  .fontSize(16)
+  .text('PRICE: '+JSON.stringify(filteredArray[0].price) +' $', 100, 160);
+  doc
+  .image(filteredArray[0].imageUrl)
+
+
+
+  doc.end();
+
+  res.setHeader("Content-Disposition", `attachment; filename=new.pdf`)
+})
 module.exports = router;
