@@ -6,7 +6,7 @@ const { join } = require("path");
 const multer = require("multer");
 const { readFile, writeFile, createReadStream } = require("fs-extra");
 const upload = multer({});
-const xml2js = require("xml-js");
+const {xml2js} = require("xml-js");
 const { begin } = require("xmlbuilder");
 const axios = require("axios");
 
@@ -56,7 +56,11 @@ router.post("/sumTwoPrices", async (req, res) => {
     data: xmlBody,
     headers: { "Content-type": "text/xml" },
   });
-  res.send(response.data);
+  const xml = response.data
+ 
+  const options = { ignoreComment: true, alwaysChildren: true, compact: true }
+  const result = xml2js(xml, options)
+  res.send('SUM OF TWO PRICES IS:'+' '+result['soap:Envelope']['soap:Body']['AddResponse']['AddResult']['_text']);
 });
 router.get("/:id", (req, res) => {
   const productsArray = JSON.parse(
