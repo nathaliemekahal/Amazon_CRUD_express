@@ -15,7 +15,20 @@ const productsFilePath=path.join(__dirname,"products.json")
 
 router.get("/",(req,res)=>{
   const fileContent=(fs.readFileSync(productsFilePath)).toString()
+
   res.send(JSON.parse(fileContent))
+})
+router.get("/sumTwoPrices",(req,res)=>{
+let id1=req.query.id1
+let id2=req.query.id2
+const productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
+
+let products=productsArray.filter(product=>product._id===id1||product._id===id2)
+let prices=products.map((product,index)=>product.price)
+let pricesJSON=JSON.stringify(prices)
+console.log(typeof pricesJSON)
+
+
 })
 router.get("/:id",(req,res)=>{
   const productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
@@ -26,6 +39,7 @@ router.get("/:id",(req,res)=>{
   res.send(filteredArray)
 })
 
+
 router.post("/",(req,res)=>{
   const newProduct={...req.body,_id:uniqid(),createdAt:new Date()+new Date().getHours()}
   productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
@@ -33,6 +47,7 @@ router.post("/",(req,res)=>{
   fs.writeFileSync(productsFilePath,JSON.stringify(productsArray))
   res.status(201).send('ok')
 })
+
 
 router.delete("/:id",(req,res)=>{
   const productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
@@ -74,6 +89,7 @@ router.post("/:id/uploadImage",upload.single("productImage"),async(req,res,next)
 
   }
 })
+
 
 
 module.exports=router
