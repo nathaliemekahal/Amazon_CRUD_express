@@ -215,9 +215,12 @@ router.get("/:id/exportToPDF", (req, res) => {
 
   doc.end();
 
-  res.setHeader("Content-Disposition", `attachment; filename=new.pdf`);
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=${req.params.id}.pdf`
+  );
   //res.download(doc);
-  var filestream = fs.createReadStream(doc);
+  var filestream = createReadStream(join(__dirname, "../../../new.pdf"));
   //
   pump(filestream, res);
 });
