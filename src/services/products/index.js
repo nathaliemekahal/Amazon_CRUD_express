@@ -4,14 +4,19 @@ const fs = require("fs");
 const uniqid = require("uniqid");
 const { join } = require("path");
 const multer = require("multer");
-const { readFile, writeFile, createReadStream } = require("fs-extra");
+const pump = require("pump");
+const { Transform } = require("json2csv");
+const {
+  readFile,
+  writeFile,
+  createReadStream,
+  createWriteStream,
+} = require("fs-extra");
 const upload = multer({});
-const {xml2js} = require("xml-js");
+const { xml2js } = require("xml-js");
 const { begin } = require("xmlbuilder");
 const axios = require("axios");
-const PDFDocument = require('pdfkit');
-
-
+const PDFDocument = require("pdfkit");
 
 const router = express.Router();
 
@@ -22,6 +27,25 @@ router.get("/", (req, res) => {
 
   res.send(JSON.parse(fileContent));
 });
+//
+router.get("/csv", (req, res) => {
+  const data = createReadStream(join(__dirname, "./products.json"));
+  const json2csv = new Transform({
+    fields: [
+      "id",
+      "name",
+      "description",
+      "brand",
+      "imageUrl",
+      "category",
+      "price",
+      "updatedAt",
+    ],
+  });
+  res.setHeader("Content-Disposition", "attachment; filename=products.csv");
+  pump(data, json2csv, res);
+});
+//
 router.post("/sumTwoPrices", async (req, res) => {
   let id1 = req.query.id1;
   let id2 = req.query.id2;
@@ -59,11 +83,15 @@ router.post("/sumTwoPrices", async (req, res) => {
     data: xmlBody,
     headers: { "Content-type": "text/xml" },
   });
-  const xml = response.data
- 
-  const options = { ignoreComment: true, alwaysChildren: true, compact: true }
-  const result = xml2js(xml, options)
-  res.send('SUM OF TWO PRICES IS:'+' '+result['soap:Envelope']['soap:Body']['AddResponse']['AddResult']['_text']);
+  const xml = response.data;
+
+  const options = { ignoreComment: true, alwaysChildren: true, compact: true };
+  const result = xml2js(xml, options);
+  res.send(
+    "SUM OF TWO PRICES IS:" +
+      " " +
+      result["soap:Envelope"]["soap:Body"]["AddResponse"]["AddResult"]["_text"]
+  );
 });
 router.get("/:id", (req, res) => {
   const productsArray = JSON.parse(
@@ -148,43 +176,50 @@ router.post(
     } catch (error) {}
   }
 );
-router.get("/:id/exportToPDF",(req,res)=>{
-
- 
+router.get("/:id/exportToPDF", (req, res) => {
   const productsArray = JSON.parse(
     fs.readFileSync(productsFilePath).toString()
   );
   let filteredArray = productsArray.filter(
     (product) => product._id === req.params.id
   );
-  res.send(filteredArray);
-  
+  // res.send(filteredArray);
 
   const doc = new PDFDocument();
-  doc.pipe(fs.createWriteStream('new.pdf'));
+  doc.pipe(createWriteStream("new.pdf"));
 
   doc
-  .font("public/fonts/PalatinoBold.ttf")
-  .fontSize(20)
-  .text('NAME: '+JSON.stringify(filteredArray[0].name).replace(/"/g,''), 100, 100);
+    .font("public/fonts/PalatinoBold.ttf")
+    .fontSize(20)
+    .text(
+      "NAME: " + JSON.stringify(filteredArray[0].name).replace(/"/g, ""),
+      100,
+      100
+    );
 
   doc
-  .font("public/fonts/PalatinoBold.ttf")
-  .fontSize(18)
-  .text('DESCRIPTION: '+JSON.stringify(filteredArray[0].description).replace(/"/g,''), 100, 130);
-
+    .font("public/fonts/PalatinoBold.ttf")
+    .fontSize(18)
+    .text(
+      "DESCRIPTION: " +
+        JSON.stringify(filteredArray[0].description).replace(/"/g, ""),
+      100,
+      130
+    );
 
   doc
-  .font("public/fonts/PalatinoBold.ttf")
-  .fontSize(16)
-  .text('PRICE: '+JSON.stringify(filteredArray[0].price) +' $', 100, 160);
-  doc
-  .image(filteredArray[0].imageUrl)
-
-
+    .font("public/fonts/PalatinoBold.ttf")
+    .fontSize(16)
+    .text("PRICE: " + JSON.stringify(filteredArray[0].price) + " $", 100, 160);
+  doc.image(filteredArray[0].imageUrl);
 
   doc.end();
 
-  res.setHeader("Content-Disposition", `attachment; filename=new.pdf`)
-})
+  res.setHeader("Content-Disposition", `attachment; filename=new.pdf`);
+  //res.download(doc);
+  var filestream = fs.createReadStream(doc);
+  //
+  pump(filestream, res);
+});
+
 module.exports = router;
