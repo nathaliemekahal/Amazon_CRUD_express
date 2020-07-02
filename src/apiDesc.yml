@@ -1,0 +1,15 @@
+openapi: 3.0.1
+info:
+  title: Amazon Market API
+  description: The perfect API that return products and their reviews
+  version: 1.0.0.001
+servers:
+  - url: http://localhost:3006/products
+    description: server to get,post,put and delete products
+  - url: http://localhost:3006/reviews
+    description: server to get,post,put and delete reviews
+paths:
+  /products:
+    get:
+      summary: Returns a list of products.
+      description: Optional extended description in CommonMark or HTML.
