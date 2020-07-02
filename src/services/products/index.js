@@ -1,95 +1,145 @@
-const express=require("express")
-const path=require("path")
-const fs=require("fs")
-const uniqid=require("uniqid")
-const {join} = require("path")
-const multer = require("multer")
-const {readFile,writeFile,createReadStream}=require("fs-extra")
-const upload = multer({})
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const uniqid = require("uniqid");
+const { join } = require("path");
+const multer = require("multer");
+const { readFile, writeFile, createReadStream } = require("fs-extra");
+const upload = multer({});
+const xml2js = require("xml-js");
+const { begin } = require("xmlbuilder");
+const axios = require("axios");
 
+const router = express.Router();
 
+const productsFilePath = path.join(__dirname, "products.json");
 
-const router=express.Router()
+router.get("/", (req, res) => {
+  const fileContent = fs.readFileSync(productsFilePath).toString();
 
-const productsFilePath=path.join(__dirname,"products.json")
+  res.send(JSON.parse(fileContent));
+});
+router.post("/sumTwoPrices", async (req, res) => {
+  let id1 = req.query.id1;
+  let id2 = req.query.id2;
+  const productsArray = JSON.parse(
+    fs.readFileSync(productsFilePath).toString()
+  );
 
-router.get("/",(req,res)=>{
-  const fileContent=(fs.readFileSync(productsFilePath)).toString()
+  let products = productsArray.filter(
+    (product) => product._id === id1 || product._id === id2
+  );
+  let prices = products.map((product, index) => product.price);
+  //let pricesJSON = JSON.stringify(prices);
+  // console.log(typeof pricesJSON);
 
-  res.send(JSON.parse(fileContent))
-})
-router.get("/sumTwoPrices",(req,res)=>{
-let id1=req.query.id1
-let id2=req.query.id2
-const productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
+  const xmlBody = begin()
+    .ele("soap:Envelope", {
+      "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+      "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+      "xmlns:soap": "http://schemas.xmlsoap.org/soap/envelope/",
+    })
+    .ele("soap:Body")
+    .ele("Add", {
+      xmlns: "http://tempuri.org/",
+    })
+    .ele("intA")
+    .text(prices[0])
+    .up()
+    .ele("intB")
+    .text(prices[1])
+    .end();
+  //
+  const response = await axios({
+    method: "post",
+    url: "http://www.dneonline.com/calculator.asmx?op=Add",
+    data: xmlBody,
+    headers: { "Content-type": "text/xml" },
+  });
+  res.send(response.data);
+});
+router.get("/:id", (req, res) => {
+  const productsArray = JSON.parse(
+    fs.readFileSync(productsFilePath).toString()
+  );
+  let filteredArray = productsArray.filter(
+    (product) => product._id === req.params.id
+  );
 
-let products=productsArray.filter(product=>product._id===id1||product._id===id2)
-let prices=products.map((product,index)=>product.price)
-let pricesJSON=JSON.stringify(prices)
-console.log(typeof pricesJSON)
+  res.send(filteredArray);
+});
 
+router.post("/", (req, res) => {
+  const newProduct = {
+    ...req.body,
+    _id: uniqid(),
+    createdAt: new Date() + new Date().getHours(),
+  };
+  productsArray = JSON.parse(fs.readFileSync(productsFilePath).toString());
+  productsArray.push(newProduct);
+  fs.writeFileSync(productsFilePath, JSON.stringify(productsArray));
+  res.status(201).send("ok");
+});
 
-})
-router.get("/:id",(req,res)=>{
-  const productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
-  let filteredArray=productsArray.filter(product=>
-    product._id===req.params.id
-  )
- 
-  res.send(filteredArray)
-})
+router.delete("/:id", (req, res) => {
+  const productsArray = JSON.parse(
+    fs.readFileSync(productsFilePath).toString()
+  );
+  let filteredArray = productsArray.filter(
+    (product) => product._id !== req.params.id
+  );
+  fs.writeFileSync(productsFilePath, JSON.stringify(filteredArray));
+  res.status(200).send("ok");
+});
+router.put("/:id", (req, res) => {
+  let productsArray = JSON.parse(fs.readFileSync(productsFilePath).toString());
+  index = productsArray.findIndex((product) => product._id === req.params.id);
 
-
-router.post("/",(req,res)=>{
-  const newProduct={...req.body,_id:uniqid(),createdAt:new Date()+new Date().getHours()}
-  productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
-  productsArray.push(newProduct)
-  fs.writeFileSync(productsFilePath,JSON.stringify(productsArray))
-  res.status(201).send('ok')
-})
-
-
-router.delete("/:id",(req,res)=>{
-  const productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
-  let filteredArray=productsArray.filter(product=>
-    product._id!==req.params.id
-  )
-  fs.writeFileSync(productsFilePath,JSON.stringify(filteredArray))
-  res.status(200).send("ok")
-})
-router.put("/:id",(req,res)=>{
-  let productsArray=JSON.parse(fs.readFileSync(productsFilePath).toString())
-  index = productsArray.findIndex(product => product._id ===req.params.id);
- 
-
-  let filteredArray=productsArray.filter(product=>
-    product._id!==req.params.id)
-  let replacement={_id:req.params.id,...req.body,updatedAt:new Date()+new Date().getHours()}  
+  let filteredArray = productsArray.filter(
+    (product) => product._id !== req.params.id
+  );
+  let replacement = {
+    _id: req.params.id,
+    ...req.body,
+    updatedAt: new Date() + new Date().getHours(),
+  };
   filteredArray.splice(index, 0, replacement);
   // filteredArray.push(replacement)
-  fs.writeFileSync(productsFilePath,JSON.stringify(filteredArray))
-  res.send(ok)
-})
+  fs.writeFileSync(productsFilePath, JSON.stringify(filteredArray));
+  res.send(ok);
+});
 //Images Path
-const studentsFolderPath = join(__dirname, "../../../amazon/public/img/Products")
+const studentsFolderPath = join(
+  __dirname,
+  "../../../amazon/public/img/Products"
+);
 //POST images
-router.post("/:id/uploadImage",upload.single("productImage"),async(req,res,next)=>{
-  try{
-    await writeFile(join(studentsFolderPath,req.params.id+'.'+req.file.originalname.split('.').pop()), req.file.buffer)
-    const productsArray= JSON.parse(fs.readFileSync(productsFilePath).toString())
-    productsArray.forEach(product =>{
-      if(product._id === req.params.id){
-        product['imageUrl'] =` http://localhost:3000/img/Products/${req.params.id}.${req.file.originalname.split('.').pop()}`
-      }
-      fs.writeFileSync(productsFilePath, JSON.stringify(productsArray))
-      res.send('uploaded successfully')
-    })
+router.post(
+  "/:id/uploadImage",
+  upload.single("productImage"),
+  async (req, res, next) => {
+    try {
+      await writeFile(
+        join(
+          studentsFolderPath,
+          req.params.id + "." + req.file.originalname.split(".").pop()
+        ),
+        req.file.buffer
+      );
+      const productsArray = JSON.parse(
+        fs.readFileSync(productsFilePath).toString()
+      );
+      productsArray.forEach((product) => {
+        if (product._id === req.params.id) {
+          product["imageUrl"] = ` http://localhost:3000/img/Products/${
+            req.params.id
+          }.${req.file.originalname.split(".").pop()}`;
+        }
+        fs.writeFileSync(productsFilePath, JSON.stringify(productsArray));
+        res.send("uploaded successfully");
+      });
+    } catch (error) {}
   }
-  catch(error){
+);
 
-  }
-})
-
-
-
-module.exports=router
+module.exports = router;
