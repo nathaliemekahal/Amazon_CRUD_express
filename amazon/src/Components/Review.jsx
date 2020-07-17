@@ -44,7 +44,7 @@ class Review extends Component {
                 })
             })
             if(response.ok){
-                let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
+                let response = await fetch(`http://127.0.0.1:3456/reviews/${this.props.id}`)
                 let reviews = await response.json()
                 this.setState({reviews})
                 console.log('REVIEWS',this.state.reviews)
