@@ -28,7 +28,7 @@ export class searchProducts extends Component {
                {this.state.filteredArray.map(product=>
                 <Col xs={3}>
                     <Card  className='my-2 mx-1'>
-                    <Card.Img className='img-fluid' variant="top" src={product.imageUrl} />
+                    <Card.Img className='img-fluid' variant="top" src={product.imageurl} />
                     <Card.Body>
                     <Card.Title>{product.name}</Card.Title>
                     <Card.Text>

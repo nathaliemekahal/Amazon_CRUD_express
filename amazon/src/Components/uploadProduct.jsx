@@ -8,7 +8,7 @@ const schema = Yup.object({
   name : Yup.string().required('Required').min(3,'Minimum 3 characters required'),
   description : Yup.string().required('Required').min(2,'Minimum 2 characters required'),
   brand : Yup.string().required('Required'),
-  imageUrl : Yup.string(),
+  imageurl : Yup.string(),
   category : Yup.string().required('Required'),
   price : Yup.string().required('Required'),
   
@@ -29,7 +29,7 @@ class uploadProduct extends React.Component {
         name:'',
         description:'',
         brand :'',
-        imageUrl:'',
+        imageurl:'',
         category :'',
         price:''
       }
@@ -38,9 +38,9 @@ class uploadProduct extends React.Component {
   
 
   componentDidMount=async()=>{
-   if(this.props.match.params.id.length > 3){
+   if(this.props.match.params.id.length > 0){
      console.log('ID',this.props.match.params.id.length)
-    let response=await fetch('http://localhost:3006/products/'+this.props.match.params.id)
+    let response=await fetch('http://localhost:3456/products/'+this.props.match.params.id)
     let parsedJson = await response.json()
     let editProduct= parsedJson[0]
     this.setState({editProduct})
@@ -48,7 +48,7 @@ class uploadProduct extends React.Component {
         name:editProduct.name,
         description:editProduct.description,
         brand :editProduct.name,
-        imageUrl:editProduct.imageUrl,
+        imageurl:editProduct.imageurl,
         category :editProduct.category,
         price:editProduct.price
     }
@@ -79,8 +79,8 @@ class uploadProduct extends React.Component {
 // }
         sendInfo=async()=>{
 
-          if(this.props.match.params.id.length >3){
-            let response = await fetch('http://127.0.0.1:3006/products/'+this.props.match.params.id,{
+          if(this.props.match.params.id.length >0){
+            let response = await fetch('http://127.0.0.1:3456/products/'+this.props.match.params.id,{
               method:'PUT',
               body:JSON.stringify(this.state.data),
               headers : new Headers({
@@ -95,7 +95,7 @@ class uploadProduct extends React.Component {
               this.props.history.push('/')
 
 }            }else{
-            let response = await fetch('http://127.0.0.1:3006/products/',{
+            let response = await fetch('http://127.0.0.1:3456/products/',{
               method:'POST',
               body:JSON.stringify(this.state.data),
               headers : new Headers({
@@ -180,20 +180,20 @@ class uploadProduct extends React.Component {
                 </Form.Control.Feedback>
             </Form.Group>
         </Form.Row>
-          <Form.Group as={Col} md={13} controlId="imageUrl">
+          <Form.Group as={Col} md={13} controlId="imageurl">
               <Form.Label>Image URL</Form.Label>
               <Form.Control
-                type="imageUrl"
-                name="imageUrl"
+                type="imageurl"
+                name="imageurl"
                 placeholder='link of the image*'
-                value={values.imageUrl}
+                value={values.imageurl}
                 onChange={handleChange}
-                isValid={touched.imageUrl && !errors.imageUrl}
-                isInvalid ={errors.imageUrl}
+                isValid={touched.imageurl && !errors.imageurl}
+                isInvalid ={errors.imageurl}
               />
               <Form.Control.Feedback type='valid' tooltip>Looks good!</Form.Control.Feedback>
               <Form.Control.Feedback type="invalid" tooltip>
-                  {errors.imageUrl}
+                  {errors.imageurl}
                 </Form.Control.Feedback>
           </Form.Group>
         <Form.Group as={Col} md={13} controlId="description">

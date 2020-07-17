@@ -14,7 +14,7 @@ class Home extends Component {
     }
   }
   componentDidMount=async()=>{
-    let response = await fetch("http://localhost:3006/products")
+    let response = await fetch("http://localhost:3456/products/")
     let products=await response.json()
     this.setState({products})
   }
@@ -31,7 +31,7 @@ class Home extends Component {
         <Col xs={3}>
           <Link to ={`/details/${product._id}`}>
          <Card  className='my-2 mx-1 productCards'>
-         <Card.Img className='img-fluid' variant="top" src={product.imageUrl} />
+         <Card.Img className='img-fluid' variant="top" src={product.imageurl} />
          <Card.Body>
            <Card.Text>
              <p><span style={{fontSize:"15px",marginBottom:'auto'}}>$</span>{product.price}</p>

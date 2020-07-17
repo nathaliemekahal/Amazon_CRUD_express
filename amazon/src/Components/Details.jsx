@@ -14,12 +14,12 @@ class Details extends Component {
         }
     }
     componentDidMount=async()=>{
-        let response =await fetch("http://localhost:3006/products/"+this.props.match.params.id)
+        let response =await fetch("http://localhost:3456/products/"+this.props.match.params.id)
         let productObj=await response.json()
         this.setState({product:productObj[0]})
     }
     removeProduct=async(productId)=>{
-        let response=await fetch("http://localhost:3006/products/"+productId,{
+        let response=await fetch("http://localhost:3456/products/"+productId,{
           method:'DELETE',
          
         })
@@ -41,7 +41,7 @@ class Details extends Component {
             <Container className='details'>
               <Row className="row-cols-2 justify-content-center">
                 <Col xs={4}>
-                <img className='img-fluid' style={{width:'100%'}}src={this.state.product.imageUrl}/>
+                <img className='img-fluid' style={{width:'100%'}}src={this.state.product.imageurl}/>
                 </Col>
                 <Col className='info' xs={7}>
                   <p>{this.state.product.name}</p>
