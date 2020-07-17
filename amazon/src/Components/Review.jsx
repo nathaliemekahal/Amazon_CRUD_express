@@ -19,7 +19,7 @@ class Review extends Component {
         }
     }
     componentDidMount = async()=>{
-        let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
+        let response = await fetch(`http://127.0.0.1:3456/reviews/${this.props.id}`)
         let reviews = await response.json()
         this.setState({reviews})
         console.log(this.state.reviews)
@@ -36,7 +36,7 @@ class Review extends Component {
     }
     sendReview =async()=>{
         if(this.state.editMode===false){
-            let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`,{
+            let response = await fetch(`http://127.0.0.1:3456/reviews/${this.props.id}`,{
                 method:'POST',
                 body:JSON.stringify(this.state.review),
                 headers : new Headers({
@@ -51,7 +51,9 @@ class Review extends Component {
             }
         }
         else if(this.state.editMode===true){
-            let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}/${this.state.review.id}`,{
+            console.log(this.props.id)
+            console.log()
+            let response = await fetch(`http://127.0.0.1:3456/reviews/${this.props.id}/${this.state.review.id}`,{
                 method:'PUT',
                 body:JSON.stringify(this.state.review),
                 headers : new Headers({
@@ -62,7 +64,7 @@ class Review extends Component {
             })
           
             if(response.ok){
-                let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
+                let response = await fetch(`http://127.0.0.1:3456/reviews/${this.props.id}`)
                 let reviews = await response.json()
                 this.setState({reviews})
                 console.log('REVIEWS',this.state.reviews)
@@ -72,12 +74,12 @@ class Review extends Component {
       
     }
     removeReview=async(reviewId)=>{
-        let response=await fetch("http://localhost:3006/reviews/"+this.props.id+'/'+reviewId,{
+        let response=await fetch("http://localhost:3456/reviews/"+this.props.id+'/'+reviewId,{
           method:'DELETE',       
         })
       if(response.ok){
         alert('Successfully Deleted')
-        let response = await fetch(`http://127.0.0.1:3006/reviews/${this.props.id}`)
+        let response = await fetch(`http://127.0.0.1:3456/reviews/${this.props.id}`)
             let reviews = await response.json()
             this.setState({reviews})
             console.log('REVIEWS',this.state.reviews)
@@ -87,7 +89,7 @@ class Review extends Component {
         let reviewObj ={
             comment:review.comment,
             rate:review.rate,
-            id:review.id
+            id:review._id
         }
         this.setState({review:reviewObj})
         this.setState({editMode:true})
@@ -122,7 +124,7 @@ class Review extends Component {
                                     <Dropdown.Item  onClick={()=>this.editReview(review)}
                             >Edit Review</Dropdown.Item>
 
-                                <Dropdown.Item onClick={()=>this.removeReview(review.id)}>
+                                <Dropdown.Item onClick={()=>this.removeReview(review._id)}>
                                 Delete Review</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
